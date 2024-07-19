@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, Image, Alert } from 'react-native';
+import { View, Text, Button, FlatList, Image, Alert, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -15,13 +15,12 @@ const ImagePickerExample = () => {
   const [visible, setVisible] = useState(false);
 
   const firebaseConfig = {
-    apiKey: "AIzaSyA3Kb9CCLDu4xfI9_rmCDLwkEPPTsOFL4c",
-    authDomain: "aula-mobile-76f22.firebaseapp.com",
-    projectId: "aula-mobile-76f22",
-    storageBucket: "aula-mobile-76f22.appspot.com",
-    messagingSenderId: "588274377803",
-    appId: "1:588274377803:web:74f45262068dddf72b99ce",
-    measurementId: "G-GNVSBPGQVC"
+    apiKey: "AIzaSyBfdwcc_4BF3-G001yKm85QWTO5yLR1chQ",
+    authDomain: "atvd-deleteimg.firebaseapp.com",
+    projectId: "atvd-deleteimg",
+    storageBucket: "atvd-deleteimg.appspot.com",
+    messagingSenderId: "263899144896",
+    appId: "1:263899144896:web:192defcdb9b80b63280325"
   };
 
   // Initialize Firebase
@@ -62,7 +61,7 @@ const ImagePickerExample = () => {
 
     var name = getRandom(200);
     // Create a reference to 'mountains.jpg'
-    const mountainsRef = ref(storage, name + '.jpg');
+    const mountainsRef = ref(storage,  'images/' + name + '.jpg');
 
     const response = await fetch(imageUri);
     const blob = await response.blob();
@@ -101,31 +100,35 @@ const ImagePickerExample = () => {
     </View>
   );
 
-   async function deleteImg(img) {
+  async function deleteImg(img) {
 
     const storage = getStorage();
 
-   // Create a reference to the file to delete
+    // Create a reference to the file to delete
     const desertRef = ref(storage, img);
 
     //Delete the file
     deleteObject(desertRef).then(() => {
-     // File deleted successfully
+      // File deleted successfully
       alert('Imagem excluída com sucesso!!');
     }).catch((error) => {
-    //  Uh-oh, an error occurred!
-      alert('Erro: '+error);
+      //  Uh-oh, an error occurred!
+      alert('Erro: ' + error);
     });
 
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title="Escolher Imagem" onPress={pickImage} />
+
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "#F8F8FF"}}>
+      
+      <Button style={{backgroundColor:"black"}} title="Escolher Imagem" onPress={pickImage} />
+
       {imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200, marginVertical: 20 }} />}
       {uploading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
+        
         <View> <Button title="Enviar Imagem" onPress={uploadImage} disabled={!imageUri} /></View>
 
       )}
@@ -134,10 +137,12 @@ const ImagePickerExample = () => {
         data={image}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
+          
           <View style={{ marginBottom: 20, alignItems: 'center' }}>
-            <Image source={{ uri: item }} style={{ width: 50, height: 50 }} />
-             <Button title="deletar" onPress={() => deleteImg(item)} disabled={!imageUri} />
+          <Image source={{ uri: item }} style={{ width: 50, height: 50 }} />
+          <Button title="deletar" onPress={() => deleteImg(item)} disabled={!imageUri} />
           </View>
+            
         )}
       />
 
@@ -145,7 +150,15 @@ const ImagePickerExample = () => {
   );
 };
 
+const styles = StyleSheet.create({
 
+  botao: {
+
+    backgroundColor: "green",
+
+  }
+
+})
 
 
 export default ImagePickerExample;
