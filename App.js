@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, Image, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Alert, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -61,7 +61,7 @@ const ImagePickerExample = () => {
 
     var name = getRandom(200);
     // Create a reference to 'mountains.jpg'
-    const mountainsRef = ref(storage,  'images/' + name + '.jpg');
+    const mountainsRef = ref(storage, name + '.jpg');
 
     const response = await fetch(imageUri);
     const blob = await response.blob();
@@ -119,46 +119,82 @@ const ImagePickerExample = () => {
   }
 
   return (
+<View style={styles.container}>
+      <TouchableOpacity style={styles.botao} onPress={pickImage}>
+        <Text style={styles.botaoTexto}>Escolher Imagem</Text>
+      </TouchableOpacity>
 
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "#F8F8FF"}}>
+      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
       
-      <Button style={{backgroundColor:"black"}} title="Escolher Imagem" onPress={pickImage} />
-
-      {imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200, marginVertical: 20 }} />}
       {uploading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        
-        <View> <Button title="Enviar Imagem" onPress={uploadImage} disabled={!imageUri} /></View>
-
+        <TouchableOpacity style={styles.botao} onPress={uploadImage}>
+          <Text style={styles.botaoTexto}>Enviar Imagem</Text>
+        </TouchableOpacity>
       )}
-      <View><Button title="Ver Imagens" onPress={LinkImage} /></View>
+      
+      <TouchableOpacity style={styles.botao} onPress={LinkImage}>
+        <Text style={styles.botaoTexto}>Ver Imagens</Text>
+      </TouchableOpacity>
+
       <FlatList
         data={image}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          
-          <View style={{ marginBottom: 20, alignItems: 'center' }}>
-          <Image source={{ uri: item }} style={{ width: 50, height: 50 }} />
-          <Button title="deletar" onPress={() => deleteImg(item)} disabled={!imageUri} />
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: item }} style={styles.imageThumbnail} />
+            <TouchableOpacity style={styles.botao} onPress={() => deleteImg(item)}>
+              <Text style={styles.botaoTexto}>Deletar</Text>
+            </TouchableOpacity>
           </View>
-            
         )}
       />
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#DCDCDC"
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   botao: {
-
-    backgroundColor: "green",
-
+    backgroundColor: "#9ACD32",
+    padding: 10,
+    marginVertical: 10,
+    marginHorizontal: 5, 
+    borderRadius: 5,
+    alignItems: 'center'
+  },
+  botaoTexto: {
+    color: "#fff",
+    fontSize: 16
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginVertical: 20,
+    marginHorizontal: 10 
+  },
+  imageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginHorizontal: 5,
+  },
+  imageThumbnail: {
+    width: 50,
+    height: 50,
+    marginRight: 10
   }
-
-})
-
+});
 
 export default ImagePickerExample;
